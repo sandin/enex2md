@@ -9,14 +9,17 @@ def convert_file(input_filepath, yinxiang_markdown_only, output_directory):
     notes = parse_enex_file(input_filepath)
     for note in notes:
         if yinxiang_markdown_only and not note.is_yinxiang_markdown():
-            return
+            continue
 
         markdown = convert_note_2_markdown(note)
-        output_filename = os.path.join(output_directory, note.title + ".md")
-        print(output_filename)
-        os.makedirs(os.path.dirname(output_filename), exist_ok=True)
-        with open(output_filename, "w", encoding="utf-8") as fd:
-            fd.write(markdown)
+        if markdown is not None:
+            output_filename = os.path.join(output_directory, note.title + ".md")
+            os.makedirs(os.path.dirname(output_filename), exist_ok=True)
+            with open(output_filename, "w", encoding="utf-8") as fd:
+                fd.write(markdown)
+            print("Success: %s" % output_filename)
+        else:
+            print("Error: can not convert note(%s) to markdown in file(%s)" % (note.title, input_filepath))
 
 
 def convert_directory(input_directory, yinxiang_markdown_only, output_directory):
@@ -32,7 +35,7 @@ def convert_directory(input_directory, yinxiang_markdown_only, output_directory)
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("input", help="A *.enex file or a directory containing many *.enex files")
-    parser.add_argument("--yinxiang-markdown-only", default=True, action="store_true")
+    parser.add_argument("--yinxiang-markdown-only", default=False, action="store_true")
     parser.add_argument("-o", "--output", help="output directory", default="markdown_out")
     args = parser.parse_args()
 

@@ -6,7 +6,7 @@ def convert_note_2_markdown(note):
     if note.is_yinxiang_markdown():
         return _extract_yinxiang_markdown(note.content)
     else:
-        return ""  # TODO
+        return None  # TODO
 
 
 def _extract_yinxiang_markdown(content):
